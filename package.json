@@ -1,0 +1,30 @@
+{
+  "name": "mtrpz-1",
+  "version": "1.0.0",
+  "description": "Console app which converts markdown to html",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BbIXOD/mtrpz-1.git"
+  },
+  "keywords": [
+    "mtrpz",
+    "lab1",
+    "markdown",
+    "convert",
+    "console",
+    "html"
+  ],
+  "author": "BbIXOD",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BbIXOD/mtrpz-1/issues"
+  },
+  "homepage": "https://github.com/BbIXOD/mtrpz-1#readme",
+  "dependencies": {
+    "commander": "^12.0.0"
+  }
+}
