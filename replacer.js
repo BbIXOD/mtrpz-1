@@ -1,15 +1,15 @@
 'use strict'
 
 const initialOpeners = [
-  new RegExp('(?<=^|\s)_(?=\w)'),
-  new RegExp('(?<=^|\s)\*\*(?=\w)'),
+  new RegExp('(?<=^|\\s)_(?=\\w)'),
+  new RegExp('(?<=^|\\s)\\*\\*(?=\\w)'),
   new RegExp('(?<=^|\s)`(?=\w)'),
 ]
 
 const initialClosers = [
-  new RegExp('(?<=\w)_+(?=\s|$)'),
-  new RegExp('(?<=\w)\*\*(?=\s|$)'),
-  new RegExp('(?<=\w)`(?=\s|$)'),
+  new RegExp('(?<=\\w)_(?=\\s|$)'),
+  new RegExp('(?<=\\w)\\*\\*(?=\\s|$)'),
+  new RegExp('(?<=\\w)`(?=\\s|$)'),
 ]
 
 const openers = [
@@ -32,23 +32,45 @@ const preformatedCloser = '</pre>'
 
 
 export default (text) => {
-  const strings = text.split('\n').split('\r')
+  const strings = text.split(/\r\n|\n|\r/)
+  
   let preFormated = false
 
-  strings.unshift(paragraphOpener)
-  strings.push(paragraphCloser)
   for (let i = 0; i < strings.length; i++) {
+    
     const string = strings[i]
-    if (string === preformatedInitial) {
+    const trimmed = string.trim()
+    if (trimmed === preformatedInitial) {
       preFormated = !preFormated
-      string = preFormated ? preformatedOpener : preformatedCloser
+      strings[i] = preFormated ? preformatedOpener : preformatedCloser
+      continue
     }
+
     if (preFormated) continue
-    if (string === '') string = paragraphOpener + '\n' + paragraphCloser
 
     const newString = markdownReplacer(string, initialOpeners, initialClosers, openers, closers)
-    if (testForMultiple(newString, initialClosers)) throw new Error('Closing tag before opening tag')
+    if (testForMultiple(newString, initialClosers)) throw new Error('Closing tag before opening tag' + newString)
     strings[i] = newString
+  }
+
+  makeParagraphs(strings)
+  return strings.join('\n')
+}
+
+const makeParagraphs = (strings) => {
+
+  strings[0] = paragraphOpener.concat(strings[0])
+  strings[strings.length - 1] = strings[strings.length - 1].concat(paragraphCloser)
+
+  for (let i = 0; i < strings.length; i++) {
+    const string = strings[i].trim()
+    if (string !== '') continue
+
+    strings.splice(i, 1)
+
+    strings[i] = paragraphOpener.concat(strings[i])
+    i--
+    strings[i] = strings[i].concat(paragraphCloser)
   }
 }
 
@@ -63,13 +85,13 @@ const markdownReplacer = (string, initialOpeners, initialClosers, openers, close
       const closerIndex = string.search(initialClosers[i])
       if (closerIndex === -1) throw new Error('No closer found')
       if (closerIndex < openerIndex) throw new Error('Closer before opener')
-      const stringBetween = stringFromOpener.slice(openerIndex, closerIndex)
+      const stringBetween = string.slice(openerIndex + 1, closerIndex)
 
       for (let j = i; j < initialOpeners.length; j++) {
-        if (initialOpeners[j].test(stringBetween)) throw new Error('Nested tags are not allowed')
+        if (initialOpeners[j].test(stringBetween)) throw new Error('Nested tags are not allowed: ' + string)
       }
 
-      string = string.replace(stringBetween, openers[i])
+      string = string.replace(initialOpeners[i], openers[i])
       string = string.replace(initialClosers[i], closers[i])
     }
   }
