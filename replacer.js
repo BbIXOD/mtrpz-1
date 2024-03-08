@@ -13,23 +13,23 @@ const initialClosers = [
 ]
 
 const openers = [
-  [ '<i>', '\x1b[23m' ],
-  ['<b>', '\x1b[22m' ],
-  ['<tt>', '\x1b[27m' ],
+  [ '<i>', '\x1b[3m' ],
+  ['<b>', '\x1b[1m' ],
+  ['<tt>', '\x1b[7m' ],
 ]
 
 const closers = [
-  [ '</i>', '\x1b[23m' ],
-  [ '</b>', '\x1b[22m' ],
-  [ '</tt>', '\x1b[27m' ],
+  [ '</i>', '\x1b[0m' ],
+  [ '</b>', '\x1b[0m' ],
+  [ '</tt>', '\x1b[0m' ],
 ]
 
 const paragraphOpener = '<p>'
 const paragraphCloser = '</p>'
 
 const preformatedInitial = '```'
-const preformatedOpener = [ '<pre>', '\x1b[27m' ]
-const preformatedCloser = ['</pre>', '\x1b[27m' ]
+const preformatedOpener = [ '<pre>', '\x1b[7m' ]
+const preformatedCloser = ['</pre>', '\x1b[0m' ]
 
 // types are: 0 for html, 1 for escape codes
 export default (text, type) => {
