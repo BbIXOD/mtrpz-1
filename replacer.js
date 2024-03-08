@@ -3,7 +3,7 @@
 const initialOpeners = [
   new RegExp('(?<=^|\\s)_(?=\\w)'),
   new RegExp('(?<=^|\\s)\\*\\*(?=\\w)'),
-  new RegExp('(?<=^|\s)`(?=\w)'),
+  new RegExp('(?<=^|\\s)`(?=\\w)'),
 ]
 
 const initialClosers = [
@@ -13,28 +13,31 @@ const initialClosers = [
 ]
 
 const openers = [
-  '<i>',
-  '<b>',
-  '<tt>',
+  [ '<i>', '\x1b[23m' ],
+  ['<b>', '\x1b[22m' ],
+  ['<tt>', '\x1b[27m' ],
 ]
 
 const closers = [
-  '</i>',
-  '</b>',
-  '</tt>',
+  [ '</i>', '\x1b[23m' ],
+  [ '</b>', '\x1b[22m' ],
+  [ '</tt>', '\x1b[27m' ],
 ]
 
 const paragraphOpener = '<p>'
 const paragraphCloser = '</p>'
+
 const preformatedInitial = '```'
-const preformatedOpener = '<pre>'
-const preformatedCloser = '</pre>'
+const preformatedOpener = [ '<pre>', '\x1b[27m' ]
+const preformatedCloser = ['</pre>', '\x1b[27m' ]
 
-
-export default (text) => {
+// types are: 0 for html, 1 for escape codes
+export default (text, type) => {
   const strings = text.split(/\r\n|\n|\r/)
-  
   let preFormated = false
+
+  const curOpeners = openers.map(x => x[type])
+  const curClosers = closers.map(x => x[type])
 
   for (let i = 0; i < strings.length; i++) {
     
@@ -42,18 +45,18 @@ export default (text) => {
     const trimmed = string.trim()
     if (trimmed === preformatedInitial) {
       preFormated = !preFormated
-      strings[i] = preFormated ? preformatedOpener : preformatedCloser
+      strings[i] = preFormated ? preformatedOpener[type] : preformatedCloser[type]
       continue
     }
 
     if (preFormated) continue
 
-    const newString = markdownReplacer(string, initialOpeners, initialClosers, openers, closers)
+    const newString = markdownReplacer(string, initialOpeners, initialClosers, curOpeners, curClosers)
     if (testForMultiple(newString, initialClosers)) throw new Error('Closing tag before opening tag' + newString)
     strings[i] = newString
   }
 
-  makeParagraphs(strings)
+  if (type === 0) makeParagraphs(strings)
   return strings.join('\n')
 }
 
