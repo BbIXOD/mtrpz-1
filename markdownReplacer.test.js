@@ -39,4 +39,9 @@ describe('markdownReplacer', () => {
       const text = '_italic **bold**';
       expect(() => markdownReplacer(text, 0)).toThrow('No closer found')
     })
+    
+    test('check work with esc codes', () => {
+      const text = '_italic_ **bold** `inverted`';
+      expect(markdownReplacer(text, 1)).toEqual('Some text') //this will cause error
+    })
 })
