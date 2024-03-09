@@ -1,5 +1,5 @@
 import { program } from "commander";
-import replacer from "./replacer.js";
+import replacer from "./markdownReplacer.js";
 import fs from "fs";
 
 program

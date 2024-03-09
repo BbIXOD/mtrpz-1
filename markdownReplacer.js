@@ -52,7 +52,7 @@ export default (text, type) => {
     if (preFormated) continue
 
     const newString = markdownReplacer(string, initialOpeners, initialClosers, curOpeners, curClosers)
-    if (testForMultiple(newString, initialClosers)) throw new Error('Closing tag before opening tag' + newString)
+    if (testForMultiple(newString, initialClosers)) throw new Error('Closing tag without opening tag')
     strings[i] = newString
   }
 
