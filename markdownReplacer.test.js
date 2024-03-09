@@ -42,6 +42,6 @@ describe('markdownReplacer', () => {
     
     test('check work with esc codes', () => {
       const text = '_italic_ **bold** `inverted`';
-      expect(markdownReplacer(text, 1)).toEqual('Some text') //this will cause error
+      expect(markdownReplacer(text, 1)).toEqual('\x1b[3mitalic\x1b[0m \x1b[1mbold\x1b[0m \x1b[7minverted\x1b[0m')
     })
 })
