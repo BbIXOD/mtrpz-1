@@ -11,7 +11,7 @@ Node.js program which does only one simple thing: converts markdown file to html
 ## Project usage
 - `node app.js <file>` - converts given file and writes result to console
 - `node app.js -o <output file> <file>` - same, but writes to given file instead
-- `node app.js -f <file>` - uses esc codes instead of html (can be combined with o)
+- `node app.js -format=esc <file>` - uses esc codes instead of html (can be combined with o)
 ## How to run tests
 - `npm test` in the project with installed deps. - that's all.
 ## User instruction
